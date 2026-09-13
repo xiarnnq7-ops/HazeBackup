@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Haze Store</title>
+  <link rel="icon" type="image/png" href="assets/HAZE.ico">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+<base target="_blank">
+  <!-- Google Identity Services (Sign in with Google) -->
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+</head>
+<body>
+
+<div id="app">
+  <!-- HOME PAGE -->
+  <div id="page-home" class="page active">
+    <div class="content">
+      <div class="header">
+        <div class="search-box">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+              stroke="#999" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.35-4.35"/>
+          </svg>
+
+          <input
+            type="text"
+            id="product-search"
+            placeholder="Search for product or try AI to discover more"
+            readonly
+            onclick="openSearchPage()"
+          >
+
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none"
+              stroke="#999" stroke-width="2">
+            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+          </svg>
+        </div>
+      </div>
+
+      <div class="categories">
+        <div class="cat active" onclick="filterCategory('all', this)">
+          For You
+        </div>
+
+        <div class="cat" onclick="filterCategory('deals', this)">
+          All Deals
+        </div>
+
+        <div class="cat" onclick="filterCategory('streetwear', this)">
+          Streetwear
+        </div>
+
+        <div class="cat" onclick="filterCategory('luxury', this)">
+          Luxury
+        </div>
+
+        <div class="cat" onclick="filterCategory('collectibles', this)">
+          Collectibles
+        </div>
+
+        <div class="cat" onclick="filterCategory('k-style', this)">
+          K-Style
+        </div>
+      </div>
+
+      <div class="banner-slider" id="banner-slider" aria-label="Promotional banners">
+        <div class="banner-track" id="banner-track">
+        </div>
+
+        <button
+          class="banner-arrow banner-prev"
+          id="banner-prev"
+          type="button"
+          aria-label="Previous banner"
+        >
+          ‹
+        </button>
+
+        <button
+          class="banner-arrow banner-next"
+          id="banner-next"
+          type="button"
+          aria-label="Next banner"
+        >
+          ›
+        </button>
+
+        <div
+          class="banner-dots"
+          id="banner-dots"
+          aria-label="Choose banner"
+        ></div>
+      </div>
+
+      <div class="quick-actions" id="quick-actions">
+        <div class="qa" onclick="navigate('shop')">
+          <div class="qa-icon flash">
+            <img src="assets/icons/flash.png" alt="Flash">
+          </div>
+          <div class="qa-label">Ship now</div>
+        </div>
+
+        <div class="qa" onclick="navigate('shop')">
+          <div class="qa-icon drop">
+            <img src="assets/icons/drop.png" alt="Drop">
+          </div>
+          <div class="qa-label">New drop</div>
+        </div>
+
+        <div class="qa" onclick="navigate('shop')">
+          <div class="qa-icon up">
+            <img src="assets/icons/up.png" alt="Up">
+          </div>
+          <div class="qa-label">Upcoming</div>
+        </div>
+
+        <div class="qa" onclick="navigate('shop')">
+          <div class="qa-icon care">
+            <img src="assets/icons/care.png" alt="Care">
+          </div>
+          <div class="qa-label">T-Shirt Care</div>
+        </div>
+
+        <div class="qa" onclick="navigate('shop')">
+          <div class="qa-icon hot">
+            <img src="assets/icons/hot.png" alt="Hot">
+          </div>
+          <div class="qa-label">Hot deals</div>
+        </div>
+      </div>
+
+      <div class="section-header">
+        <h3>New Arrivals</h3>
+        <a href="#" onclick="navigate('shop'); return false;">See all →</a>
+      </div>
+      <div class="product-grid" id="home-products"></div>
+    </div>
+  </div>
+
+  <!-- SHOP PAGE -->
+  <div id="page-shop" class="page">
+    <div class="content">
+      <div class="shop-header">
+        <h2>Shop</h2>
+        <div class="filter-chips">
+          <button class="chip active" onclick="filter('all', this)">All</button>
+          <button class="chip" onclick="filter('hoodie', this)">Hoodie</button>
+          <button class="chip" onclick="filter('tshirt', this)">T-Shirt</button>
+          <button class="chip" onclick="filter('new', this)">New Drop</button>
+          <button class="chip" onclick="filter('sale', this)">Sale</button>
+        </div>
+      </div>
+      <div class="product-grid" id="shop-products"></div>
+    </div>
+  </div>
+
+  <section id="page-search" class="page">
+    <div class="search-page">
+      <div class="search-page-header">
+        <button class="back-btn" onclick="navigate('home')">←</button>
+        <h2>Search</h2>
+      </div>
+
+      <div class="search-box-page">
+        <input
+          type="text"
+          id="search-page-input"
+          placeholder="Search products..."
+          autocomplete="off"
+        >
+        <button onclick="clearSearchPage()">×</button>
+      </div>
+
+      <div id="search-history" class="search-history"></div>
+
+      <div id="search-page-results" class="search-page-results"></div>
+    </div>
+  </section>
+
+  <!-- CART PAGE -->
+  <div id="page-cart" class="page">
+    <div class="content" id="cart-scroll">
+      <div class="cart-header"><h2>My Cart</h2></div>
+      <div id="cart-items"></div>
+    </div>
+    <div class="cart-footer" id="cart-footer" style="display: none;">
+      <div>
+        <div class="cart-total-label">Total</div>
+        <div class="cart-total-price" id="cart-total">฿0</div>
+      </div>
+      <button class="checkout-btn" onclick="checkout()">Checkout</button>
+    </div>
+  </div>
+
+  <!-- WISHLIST PAGE -->
+  <div id="page-wishlist" class="page">
+    <div class="content" id="wishlist-scroll">
+      <div class="wishlist-header"><h2>My Wishlist</h2></div>
+      <div id="wishlist-products"></div>
+    </div>
+  </div>
+
+  <!-- PROFILE PAGE -->
+  <div id="page-profile" class="page">
+    <div class="content">
+      <div class="profile-header">
+        <div class="avatar" id="profile-avatar">👤</div>
+        <div class="profile-name" id="profile-name">SASOM Member</div>
+        <div class="profile-email" id="profile-email">member@sasom.com</div>
+        <div class="provider-badge" id="profile-provider" style="display:none;"></div>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="stat-value" id="stat-orders">0</div>
+          <div class="stat-label">Orders</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value" id="stat-wishlist">0</div>
+          <div class="stat-label">Wishlist</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">Gold</div>
+          <div class="stat-label">Member</div>
+        </div>
+      </div>
+      <div class="menu">
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img src="assets/icons/order.png" alt="My Orders">
+            </div>
+            My Orders
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img src="assets/icons/payment.png" alt="Payment Methods">
+            </div>
+            Payment Methods
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img src="assets/icons/address.png" alt="Addresses">
+            </div>
+            Addresses
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img src="assets/icons/notification.png" alt="Notifications">
+            </div>
+            Notifications
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img src="assets/icons/setting.png" alt="Settings">
+            </div>
+            Settings
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img src="assets/icons/customer-service.png" alt="Help Center">
+            </div>
+            Help Center
+          </div>
+          <div class="menu-arrow">›</div>
+        </div>
+
+        <div
+          class="menu-item"
+          id="menu-auth-item"
+          onclick="handleAuthMenuClick()"
+        >
+          <div class="menu-left">
+            <div class="menu-icon">
+              <img
+                src="assets/icons/login-.png"
+                alt="Login"
+                id="menu-auth-icon"
+              >
+            </div>
+            <span id="menu-auth-label">Log In / Register</span>
+          </div>
+
+          <div class="menu-arrow">›</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LOGIN / REGISTER PAGE -->
+  <div id="page-login" class="page">
+    <div class="content">
+      <div class="auth-wrap">
+        <div class="auth-brand">HAZE</div>
+        <div class="auth-tabs">
+          <button class="auth-tab active" id="tab-login" onclick="setAuthTab('login')">Log In</button>
+          <button class="auth-tab" id="tab-register" onclick="setAuthTab('register')">Register</button>
+        </div>
+
+        <div id="auth-error" class="auth-error" style="display:none;"></div>
+
+        <!-- LOGIN FORM -->
+        <form id="form-login" class="auth-form" onsubmit="handleLogin(event)">
+          <label>Username</label>
+          <input type="text" id="login-username" autocomplete="username" required>
+          <label>Password</label>
+          <input type="password" id="login-password" autocomplete="current-password" required>
+          <button type="submit" class="btn-primary auth-submit">Log In</button>
+        </form>
+
+        <!-- REGISTER FORM -->
+        <form id="form-register" class="auth-form" style="display:none;" onsubmit="handleRegister(event)">
+          <label>Username</label>
+          <input type="text" id="register-username" autocomplete="username" required minlength="3">
+          <label>Email</label>
+          <input type="email" id="register-email" autocomplete="email" required>
+          <label>Password</label>
+          <input type="password" id="register-password" autocomplete="new-password" required minlength="6">
+          <button type="submit" class="btn-primary auth-submit">Create Account</button>
+        </form>
+
+        <div class="auth-divider"><span>or continue with</span></div>
+
+        <div id="g_id_signin_container" class="google-btn-slot"></div>
+        <button class="btn-discord" onclick="loginWithDiscord()">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M20.317 4.37a19.79 19.79 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.056 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128c.126-.094.252-.192.372-.291a.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.099.246.197.373.291a.077.077 0 0 1-.006.128 12.3 12.3 0 0 1-1.873.892.076.076 0 0 0-.04.106c.36.698.772 1.363 1.225 1.994a.076.076 0 0 0 .084.028 19.83 19.83 0 0 0 6.002-3.03.077.077 0 0 0 .032-.055c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.955 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/></svg>
+          Continue with Discord
+        </button>
+
+        <p class="auth-guest" onclick="navigate('profile')">Cancel</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM NAV -->
+  <div class="bottom-nav">
+    <button class="nav-item active" onclick="navigate('home')" data-page="home">
+      <svg viewBox="0 0 24 24"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+      <span>Home</span>
+    </button>
+    <button class="nav-item" onclick="navigate('shop')" data-page="shop">
+      <svg viewBox="0 0 24 24"><path d="m16 11 1.5-1.5a2.12 2.12 0 0 0 0-3h0a2.12 2.12 0 0 0-3 0L13 8"/><path d="m8 13-1.5 1.5a2.12 2.12 0 0 0 0 3h0a2.12 2.12 0 0 0 3 0L11 16"/><path d="m13 8 3 3"/><path d="m8 13 3-3"/><path d="m11 16 3 3"/></svg>
+      <span>Shop</span>
+    </button>
+    <button class="nav-item" onclick="navigate('cart')" data-page="cart">
+      <svg viewBox="0 0 24 24"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+      <span>Cart</span>
+      <div class="nav-badge" id="nav-badge" style="display: none;">0</div>
+    </button>
+    <button class="nav-item" onclick="navigate('wishlist')" data-page="wishlist">
+      <svg viewBox="0 0 24 24"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
+      <span>Wishlist</span>
+    </button>
+    <button class="nav-item" onclick="navigate('profile')" data-page="profile">
+      <svg viewBox="0 0 24 24"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span>Profile</span>
+    </button>
+  </div>
+
+  <!-- Product Detail Modal -->
+  <div class="modal" id="product-modal" onclick="closeModal(event)">
+    <div class="modal-content" onclick="event.stopPropagation()">
+      <button class="close-modal" onclick="closeModal()">✕</button>
+      <div class="modal-img" id="modal-img">👕</div>
+      <div class="modal-title" id="modal-title">Product Name</div>
+      <div class="modal-price" id="modal-price">฿0</div>
+      <div class="modal-desc" id="modal-desc">Premium quality streetwear. Made from 100% cotton with oversized fit. Perfect for everyday wear.</div>
+      <div class="size-selector">
+        <label>Select Size</label>
+        <div class="sizes">
+          <button class="size-btn" onclick="selectSize(this)">S</button>
+          <button class="size-btn active" onclick="selectSize(this)">M</button>
+          <button class="size-btn" onclick="selectSize(this)">L</button>
+          <button class="size-btn" onclick="selectSize(this)">XL</button>
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-wishlist" id="modal-wishlist" onclick="toggleModalWishlist()">🤍</button>
+        <button class="btn-primary" id="modal-add" onclick="addFromModal()">Add to Cart</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast -->
+  <div class="toast" id="toast"></div>
+</div>
+
+<!-- ====== FILL THESE IN — see README.md for how to get each value ====== -->
+<script>
+  window.HAZE_CONFIG = {
+    // Your deployed Google Apps Script Web App URL (ends in /exec)
+    BACKEND_URL: "https://script.google.com/macros/s/AKfycbzswXVuQGResAM-hZTEtjU3R6cOjmoAFQabBGcNE1AMbDLW9GBru4ptlIFh4vCnauDF/exec",
+    // OAuth Client ID from Google Cloud Console (Credentials > OAuth client ID > Web application)
+    GOOGLE_CLIENT_ID: "704985595813-cvchbnusjlpt4hrsomjmt6qanl2pagu8.apps.googleusercontent.com",
+    // Application ID (Client ID) from the Discord Developer Portal
+    DISCORD_CLIENT_ID: "1544563911829753906",
+    // Must be added as a redirect in the Discord app AND match your Apps Script /exec URL exactly
+    DISCORD_REDIRECT_URI: "https://discord.com/oauth2/authorize?client_id=1544563911829753906&response_type=code&redirect_uri=https%3A%2F%2Fscript.google.com%2Fmacros%2Fs%2FAKfycbxjPtNrFSMvib7sSUqivWt1fipMbB15N7Ql6UWp9qrFyJtwWKfcdXTEuv9ZQsDzaYI4%2Fexec&scope=identify"
+  };
+</script>
+<script type="module" src="./app.js"></script>
+<script src="./auth.js"></script>
+</body>
+</html>
